@@ -18,15 +18,15 @@ const uri = process.env.MONGODB;
 app.get('/', async (req, res) => {
     let response = {status: "OK"}
     let data=[]
+    const client = new MongoClient(uri, {
+        serverApi: {
+          version: ServerApiVersion.v1,
+          strict: true,
+          deprecationErrors: true,
+        }
+    });
+    
     try {
-        const client = new MongoClient(uri, {
-            serverApi: {
-              version: ServerApiVersion.v1,
-              strict: true,
-              deprecationErrors: true,
-            }
-        });
-
         const movies = client.db("Researches").collection("Websites Research");
         
         const query = {};
