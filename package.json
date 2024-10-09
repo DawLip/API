@@ -11,6 +11,6 @@
   },
   "scripts": {
     "start": "npx ts-node main.ts",
-    "build": "node build --output public"
+    "build": "echo ':D'"
   }
 }
