@@ -1,38 +1,38 @@
 require('dotenv').config();
+import express, { Request, Response } from 'express'
 
-const express = require('express');
-const app = express();
-const bodyParser = require('body-parser');
-const cors = require('cors');
+import cors from 'cors'
+import { MongoClient, ServerApiVersion } from 'mongodb'
 
-const urlencodedParser = bodyParser.urlencoded({ extended: false });
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const app = express()
 
-app.use(express.static('public'));
-app.use(cors());
+app.use(express.static('public'))
+app.use(cors())
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+
 
 const path = require('path');
 const port = process.env.PORT
 const uri = process.env.MONGODB;
+const serverApi = {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  }
 
-app.get('/', async (req, res) => {
-    let response = {status: "OK"}
+app.get('/', async (req: Request, res: Response) => {
+    let response = {status: "OK", data: []}
     let data=[]
-    const client = new MongoClient(uri, {
-        serverApi: {
-          version: ServerApiVersion.v1,
-          strict: true,
-          deprecationErrors: true,
-        }
-    });
+    const client = new MongoClient(uri, {serverApi});
 
     try {
-        const movies = client.db("Researches").collection("Websites Research");
+        const collection = client.db("Researches").collection("Websites Research");
         
         const query = {};
         const options = {};
 
-        const cursor = await movies.find();        
+        const cursor = await collection.find();        
         for await (const doc of cursor) {
             data.push(doc)
           }
@@ -41,12 +41,19 @@ app.get('/', async (req, res) => {
     res.send({...response, data})
 })
 
-app.post('/users-list', (req, res) => {
-    const usersList = req.body;
+
+app.post('/', async (req: Request, res: Response) => {
+    const data = req.body;
+    let response = {status: "OK", data: []}
+    const client = new MongoClient(uri, {serverApi});
     
-    res.send({
-      message: 'New user was added to the list',
-    });
+    try {
+        const collection = client.db("Researches").collection("Websites Research");
+        
+        await collection.insertOne(data);        
+    } finally {await client.close()}
+
+    res.send(response);
   });
 
 app.listen(port, () => console.log(`Server ready on port ${port}.`));
