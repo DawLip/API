@@ -3,17 +3,17 @@ require('dotenv').config();
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const urlencodedParser = bodyParser.urlencoded({ extended: false });
 const { MongoClient, ServerApiVersion } = require('mongodb');
 
 app.use(express.static('public'));
+app.use(cors());
 
 const path = require('path');
 const port = process.env.PORT
 const uri = process.env.MONGODB;
-
-
 
 app.get('/', async (req, res) => {
     let response = {status: "OK"}
@@ -25,7 +25,7 @@ app.get('/', async (req, res) => {
           deprecationErrors: true,
         }
     });
-    
+
     try {
         const movies = client.db("Researches").collection("Websites Research");
         
