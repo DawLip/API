@@ -11,6 +11,6 @@
   },
   "scripts": {
     "start": "npx ts-node main.ts",
-    "build": "rimraf ./build && tsc"
+    "build": "rimraf ./public && tsc"
   }
 }
