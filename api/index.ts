@@ -13,18 +13,20 @@ const path = require('path');
 const port = process.env.PORT
 const uri = process.env.MONGODB;
 
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
-});
+
 
 app.get('/', async (req, res) => {
     let response = {status: "OK"}
     let data=[]
     try {
+        const client = new MongoClient(uri, {
+            serverApi: {
+              version: ServerApiVersion.v1,
+              strict: true,
+              deprecationErrors: true,
+            }
+        });
+
         const movies = client.db("Researches").collection("Websites Research");
         
         const query = {};
