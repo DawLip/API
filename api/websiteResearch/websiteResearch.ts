@@ -1,14 +1,13 @@
 import express, { Request, Response } from 'express'
 import axios from 'axios'
 
-import { MongoClient } from 'mongodb'
-import db from './mongodb'
+import db from '../utils/mongodb'
 
-import {uri, serverApi, seperConfig} from './config'
+import {seperConfig} from '../config'
 
 const router = express.Router()
 
-router.post('/', async (req: Request, res: Response) => {
+router.post('/stage1', async (req: Request, res: Response) => {
     /* 
     req.query:
         query: String       <= search query
@@ -20,7 +19,13 @@ router.post('/', async (req: Request, res: Response) => {
         places: A[O]        <= places
     */
 
-    const data = {query: req.query.query, location: req.query.location  || "Silesian Voivodeship, Poland", results:[], places:[]}
+    const data = {
+        stage: 1,
+        query: req.query.query, 
+        location: req.query.location  || "Silesian Voivodeship, Poland", 
+        results:[], 
+        places:[]
+    }
     
     const q = JSON.stringify({
     "q": data.query,
@@ -38,6 +43,14 @@ router.post('/', async (req: Request, res: Response) => {
         res.status(200).send(data)
     })
     .catch(error => console.log(error))
+})
+
+router.get('/', async (req: Request, res: Response) => {
+    /*
+    return: all Researches.WebsiteResearch
+    */
+    const data = await db.find("Researches", "Websites Research")
+    res.status(200).send(data);
 })
 
 export default router

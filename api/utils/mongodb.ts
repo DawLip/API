@@ -1,6 +1,6 @@
 import { MongoClient } from 'mongodb'
 
-import {uri, serverApi, seperConfig} from './config'
+import {uri, serverApi, seperConfig} from '../config'
 
 const insertOne = (db: string, col: string, data: Object) => {
     const client = new MongoClient(uri, {serverApi});
