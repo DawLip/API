@@ -1,9 +1,11 @@
 require('dotenv').config();
 import express, { Request, Response } from 'express'
-
 import cors from 'cors'
-import { MongoClient, ServerApiVersion } from 'mongodb'
-import { log } from 'console';
+
+import { MongoClient } from 'mongodb'
+
+import {port, uri, serverApi, seperConfig} from './config'
+import search from './search'
 
 const app = express()
 
@@ -12,15 +14,7 @@ app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
-
-const path = require('path');
-const port = process.env.PORT
-const uri = process.env.MONGODB;
-const serverApi = {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
+app.use('/search', search)
 
 app.get('/', async (req: Request, res: Response) => {
     /* 
@@ -36,7 +30,7 @@ app.get('/', async (req: Request, res: Response) => {
     let response = {data: []}
     let data=[]
     const dbName = String(req.query?.database || "Researches")
-    const colName =String(req.query.collection || "Websites Research")
+    const colName =String(req.query?.collection || "Websites Research")
     const query = {};
     const options = {};
     
@@ -82,3 +76,4 @@ app.post('/', async (req: Request, res: Response) => {
 app.listen(port, () => console.log(`Server ready on port ${port}.`));
 
 module.exports = app;
+export default app
