@@ -25,11 +25,9 @@ const serverApi = {
 app.get('/', async (req: Request, res: Response) => {
     /* 
     req.query: Not used
-
     req.body: Object
         database: String <= mongoDB database name
         collection: String <= mongoDB collection name
-
     return: Object
         data: [{any}] <= data from database
     */
@@ -57,7 +55,6 @@ app.get('/', async (req: Request, res: Response) => {
 app.post('/', async (req: Request, res: Response) => {
     /* 
     req.query: Not used
-
     req.body:
         {
             options: Object
@@ -66,7 +63,6 @@ app.post('/', async (req: Request, res: Response) => {
             data:
                 [{any},]
         }
-
     return: Not used
     */
 
@@ -80,7 +76,7 @@ app.post('/', async (req: Request, res: Response) => {
         await collection.insertOne(data);        
     } finally {await client.close()}
 
-    res.status(200).send({...response});
+    res.status(200).send({});
   });
 
 app.listen(port, () => console.log(`Server ready on port ${port}.`));
