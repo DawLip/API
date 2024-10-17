@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express'
 import axios from 'axios'
 
 import { MongoClient } from 'mongodb'
+import db from './mongodb'
 
 import {uri, serverApi, seperConfig} from './config'
 
@@ -19,7 +20,6 @@ router.post('/', async (req: Request, res: Response) => {
         places: A[O]        <= places
     */
 
-    const response = {}
     const data = {query: req.query.query, location: req.query.location  || "Silesian Voivodeship, Poland", results:[], places:[]}
     
     const q = JSON.stringify({
@@ -34,16 +34,10 @@ router.post('/', async (req: Request, res: Response) => {
     .then(async r => {
         data.results = r.data.organic
         data.places = r.data.places
-
-        const client = new MongoClient(uri, {serverApi});
-        try {
-            const collection = client.db("Researches").collection("Websites Research");
-            collection.insertOne(data);    
-        } finally {await client.close()}
-
-        res.status(200).send({...response, data})
+        db.insertOne("Researches", "Websites Research", data)
+        res.status(200).send(data)
     })
-    .catch(error => console.log(error));
+    .catch(error => console.log(error))
 })
 
 export default router
